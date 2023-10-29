@@ -97,7 +97,8 @@ def shortest_path(source, target):
     queue.add(curr_node)
     done = False
     target_node = None
-    while queue and not done:
+    visited = set()
+    while (not queue.empty()) and not done:
         curr_node = queue.remove()
         neighbors = neighbors_for_person(curr_node.person)
         for movie, person in neighbors:
@@ -105,8 +106,11 @@ def shortest_path(source, target):
                 target_node = Node(person, curr_node, movie)
                 done = True
                 break
-            if not queue.contains_state(person):
+            if not queue.contains_state(person) and person not in visited:
                 queue.add(Node(person, curr_node, movie))
+                visited.add(person)
+    if target_node is None:
+        return None
     while target_node:
         result.append((target_node.movie, target_node.person))
         target_node = target_node.parent
